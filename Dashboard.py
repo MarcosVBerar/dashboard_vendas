@@ -191,6 +191,7 @@ with aba3:
                                         y = vendedores[['sum']].sort_values('sum', ascending=False).head(qtd_vendedores).index,
                                         text_auto = True,
                                         title = f'Top {qtd_vendedores} vendedores (receita)')
+        fig_receita_vendedores.update_layout(yaxis_title='')
         st.plotly_chart(fig_receita_vendedores)
     with coluna2:
         st.metric('Quantidade de vendas', formata_numero(dados.shape[0]))
@@ -199,4 +200,5 @@ with aba3:
                                         y = vendedores[['count']].sort_values('count', ascending=False).head(qtd_vendedores).index,
                                         text_auto = True,
                                         title = f'Top {qtd_vendedores} vendedores (quantidade de vendas)')
+        fig_vendas_vendedores.update_layout(yaxis_title='')
         st.plotly_chart(fig_vendas_vendedores)
