@@ -15,9 +15,28 @@ def mensagem_sucesso():
 st.title('DADOS BRUTOS')
 
 url = 'https://labdados.com/produtos'
+tentativas = 3
+atraso = 5 # segundos
 
-response = requests.get(url)
-dados = pd.DataFrame.from_dict(response.json())
+for i in range(tentativas):
+    try:
+        response = requests.get(url)
+        response.raise_for_status() # lança uma exceção para códigos de erro HTTP
+        dados = pd.DataFrame.from_dict(response.json())
+        break   # Sai do loop se a solicitação for bem sucedida
+    except requests.exceptions.RequestException as e:
+        print(f"Erro na requisição (tentativa {i + 1}/{tentativas}): {e}")
+    except json.decoder.JSONDecodeError as e:
+        print(f"Erro ao decodificar JSON (tentativa {i + 1}/{tentativas}): {e}")
+        print(response.text)
+    except Exception as e:
+        print(f"Erro inesperado (tentativa {i + 1}/{tentativas}): {e}")
+    if i < tentativas - 1:
+        print(f"Tentando novamente em {atraso} segundos...")
+        time.sleep(atraso)
+else:
+    print('Falha ao obter dados após várias tentativas.')
+    
 dados['Data da Compra'] = pd.to_datetime(dados['Data da Compra'], format='%d/%m/%Y')
 
 with st.expander('Colunas'):
